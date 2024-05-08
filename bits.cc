@@ -2,6 +2,7 @@
 #include <cstdint>
 
 #include <benchmark/benchmark.h>
+#include <cstdlib>
 
 size_t bits_1(uint32_t data) {
     size_t count {0};
@@ -46,12 +47,43 @@ size_t bits_4(uint32_t data) {
         + precomp[(data >> 24) & 0xFF];
 }
 
+uint32_t gen() {
+    return std::rand();
+}
+
 static void BM_Bits1(benchmark::State& state) {
+    auto v = gen();
     for(auto _ : state) {
-        benchmark::DoNotOptimize(bits_1(1));
+        benchmark::DoNotOptimize(bits_1(v));
     }
 }
 
+static void BM_Bits2(benchmark::State& state) {
+    auto v = gen();
+    for(auto _ : state) {
+        benchmark::DoNotOptimize(bits_2(v));
+    }
+}
+
+static void BM_Bits3(benchmark::State& state) {
+    auto v = gen();
+    for(auto _ : state) {
+        benchmark::DoNotOptimize(bits_3(v));
+    }
+}
+
+static void BM_Bits4(benchmark::State& state) {
+    auto v = gen();
+    for(auto _ : state) {
+        benchmark::DoNotOptimize(bits_4(v));
+    }
+}
+
+
 BENCHMARK(BM_Bits1);
+BENCHMARK(BM_Bits2);
+BENCHMARK(BM_Bits3);
+BENCHMARK(BM_Bits3)->Setup([](const benchmark::State &){ fill_it(); });
+
 
 BENCHMARK_MAIN();
